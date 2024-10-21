@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html ng-app="aluguelCarro">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8"/>
+        <title>Aluguel de Carros - Versão AngularJS</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <script src="libs/angular.min.js"></script>
+        <script src="libs/angular-locale_pt-br.js"></script>
+        <script src="js/aluguelCarroApp.js"></script>
+    </head>
+    <body ng-controller="aluguelCarroCtrl">
+        <div class="tituloAplicacao">
+            <h3 ng-bind="nomeAplicacao"></h3>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Placa</th>
+                <th>Tipo</th>
+                <th>Cor</th>
+                <th>Ano modelo</th>
+                <th>Combustível</th>
+                <th>R$ Diária</th>
+            </tr>
+            <tr ng-repeat="carro in listaVeiculos | filter: {Placa: numeroPlaca}">
+                <td>{{carro.Marca}}</td>
+                <td>{{carro.Modelo}}</td>
+                <td>{{carro.Placa}}</td>
+                <td>{{carro.Tipo}}</td>
+                <td>{{carro.Cor}}</td>
+                <td>{{carro.AnoModelo}}</td>
+                <td>{{carro.Combustivel}}</td>
+                <td>{{carro.Diaria | currency}}</td>
+            </tr>
+        </table>
+        <hr/>
+        <div class="form-control">
+            <form name="CadastroVeiculo">
+                <p>
+                    <label>Selecione a marca: </label>
+                    <select name="marcaVeiculo" ng-model="carro.Marca" ng-options="marca as marca.Marca for marca in listaMarcas" ng-required="true">
+                        <option value="">Selecione a marca</option>
+                    </select>
+                    <label>Selecione o modelo: </label>
+                    <select name="modeloVeiculo" ng-model="carro.Modelo" ng-options="modelo as modelo.Modelo for modelo in listaModelos" ng-required="true">
+                        <option value="">Selecione o modelo</option>
+                    </select>
+                    <label>Placa: </label>
+                    <input type="text" name="placaVeiculo" ng-model="carro.Placa" ng-required="true" ng-pattern="/[A-Z, a-z]{3}-\d{4}$/"/>
+                </p>
+                <p>
+                    <label>Selecione o tipo: </label>
+                    <select name="tipoVeiculo" ng-model="carro.Tipo" ng-options="tipo as tipo.Tipo for tipo in listaTipos" ng-required="true">
+                        <option value="">Selecione o tipo</option>
+                    </select>
+                    <label>Selecione o cor: </label>
+                    <select name="corVeiculo" ng-model="carro.Cor" ng-options="cor as cor.Cor for cor in listaCores" ng-required="true">
+                        <option value="">Selecione o cor</option>
+                    </select>
+                </p>
+                <p>
+                    <label>Ano modelo: </label>
+                    <input type="text" name="anoVeiculo" ng-model="carro.AnoModelo" ng-required="true"/>
+                    <label>Selecione o combustível: </label>
+                    <select name="combustivelVeiculo" ng-model="carro.Combustivel" ng-options="combustivel as combustivel.Combustivel for combustivel in listaCombustiveis" ng-required="true">
+                        <option value="">Selecione o combustível</option>
+                    </select>
+                </p>
+                <p>
+                    <label>Valor da diária: </label>
+                    <input type="number" name="valorDiaria" ng-model="carro.Diaria" ng-required="true"/>
+                </p>
+                <div ng-show="CadastroVeiculo.marcaVeiculo.$error.required && CadastroVeiculo.marcaVeiculo.$dirty" class="alert alert-info">
+                    Selecione a marca do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.modeloVeiculo.$error.required && CadastroVeiculo.modeloVeiculo.$dirty" class="alert alert-info">
+                    Digite o modelo do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.placaVeiculo.$error.required && CadastroVeiculo.placaVeiculo.$dirty" class="alert alert-info">
+                    Digite a placa do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.placaVeiculo.$error.pattern && CadastroVeiculo.placaVeiculo.$dirty" class="alert alert-info">
+                    A placa do veículo deve ser digitada no formato AAA-9999.
+                </div>
+                <div ng-show="CadastroVeiculo.tipoVeiculo.$error.required && CadastroVeiculo.tipoVeiculo.$dirty" class="alert alert-info">
+                    Selecione o tipo de veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.corVeiculo.$error.required && CadastroVeiculo.corVeiculo.$dirty" class="alert alert-info">
+                    Selecione a cor do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.anoVeiculo.$error.required && CadastroVeiculo.anoVeiculo.$dirty" class="alert alert-info">
+                    Digite o ano-modelo do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.combustivelVeiculo.$error.required && CadastroVeiculo.combustivelVeiculo.$dirty" class="alert alert-info">
+                    Selecione o tipo de combustível do veículo!
+                </div>
+                <div ng-show="CadastroVeiculo.valorDiaria.$error.required && CadastroVeiculo.valorDiaria.$dirty" class="alert alert-info">
+                    Digite o valor da diária do veículo!
+                </div>
+                <button class="btn btn-primary" ng-click="adicionarCarro(carro)" ng-disabled="CadastroVeiculo.$invalid">Adicionar</button>
+                <div>
+                    <h4>{{mensagem}}</h4>
+                </div>
+                <div style="margin-top:20px;padding:10px;background-color:#77ddff">
+                    <label>Digite o número da placa do veículo:</label>
+                    <input type="text" ng-model="numeroPlaca" ng-pattern="/^[A-Z,a-z]{3}-\d{4}$/"/>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
